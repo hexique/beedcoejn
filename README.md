@@ -1,2 +1,2 @@
 # beedcoejn
-Virtual crypto investor (joke program)
+i'll make a readme tomorrow 💀

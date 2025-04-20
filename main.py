@@ -2,6 +2,9 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 import requests
+from json import dumps, loads, load as jsonload
+
+# v1.1
 
 root = tk.Tk()
 root.title("BeedKoen")
@@ -37,6 +40,7 @@ def update_response():
     else:
         print(f'HTTP Error {response.status_code}')
         return (f'HTTP Error {response.status_code}','','')
+    
 def update_labels():
     i = 0
     response = update_response()
@@ -86,6 +90,18 @@ def update_bal():
         if balance[coin] > 0: result += f'{coin}: {round(balance[coin], 9)}\n'
     balance_display['text'] = result
 
+def save():
+    with open('data.json', 'w', encoding='utf-8') as f:
+        f.write(dumps(balance))
+    root.destroy()
+
+def load():
+    global balance
+    with open('data.json', 'r', encoding='utf-8') as f:
+        file = f.read()
+        balance = loads(file)
+        update_bal()
+
 tk.Label(root, text="Beedkoen", font=("Arial", 35),justify="center").pack()
 
 tk.Label(root, text='Price (USD)').place(x=5,y=200)
@@ -114,6 +130,11 @@ for coin in response:
 ttk.Button(root, text='Buy', command=lambda: buy(price_inp.get(), coin_inp.get())).place(x=5,y=250)
 ttk.Button(root, text='Sell', command=lambda: sell(price_inp.get(), coin_inp.get())).place(x=95,y=250)
 
+root.protocol('WM_DELETE_WINDOW',save)
+
+load()
+
 loop_update()
+
 
 root.mainloop() 
